@@ -9,17 +9,19 @@ from hashtables import (HashTable,
 def get_indices_of_item_weights(weights, length, limit):
     ht = HashTable(16)
 
-    # go through list of weights
-    for i in range(length):
-        # check to see if there is a hash existing
-        index_1 = hash_table_retrieve(ht, limit - weights[i])
-        # if there is a hash, that means a pair exists
-        if index_1 is not None:
-            #return tuple of pair of indexes
-            index_2 = (i, index_1)
-            return index_2
+    
+    for index in range(0, len(weights)):
+        weight = weights[index]
+
+        match = hash_table_retrieve(ht, limit-weight)
+        if match is not None:
+            first_index = max(index, match)
+            second_index = min(index, match)
+
+            return (first_index, second_index)
         else:
-            hash_table_insert(ht, weights[i], i)
+            hash_table_insert(ht, weight, index)
+
     return None
 
 
