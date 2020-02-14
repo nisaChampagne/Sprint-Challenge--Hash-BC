@@ -35,15 +35,13 @@ def proof_of_work(last_proof):
 
     start = timer()
 
-    print(GREEN + "Searching for next proof")
+    print("Searching for next proof")
     proof = 0
-    #  TODO: Your code here
-    last = f"{last_proof}".encode()
-    last_hash = hashlib.sha256(last).hexdigest()
+    last_hash = hashlib.sha256(f'{last_proof}'.encode()).hexdigest()
     while valid_proof(last_hash, proof) is False:
-        proof += random.random()
+        proof += 1
 
-    print(RED + "Proof found: " + str(proof) + " in " + str(timer() - start))
+    print("Proof found: " + str(proof) + " in " + str(timer() - start))
     return proof
 
 
@@ -52,27 +50,24 @@ def valid_proof(last_hash, proof):
     Validates the Proof:  Multi-ouroborus:  Do the last six characters of
     the hash of the last proof match the first six characters of the hash
     of the new proof?
-
     IE:  last_hash: ...AE9123456, new hash 123456E88...
     """
-
-    # TODO: Your code here!
     guess = f"{proof}".encode()
     guess_hash = hashlib.sha256(guess).hexdigest()
 
     #prints
     # print(YELLOW + f"{guess_hash[:6]} || {last_hash[-6:]}")
 
-    return guess_hash[:DIFFICULTY] == last_hash[:DIFFICULTY]
+    return guess_hash[:DIFFICULTY] == last_hash[-DIFFICULTY:]
+
 
 if __name__ == '__main__':
     # What node are we interacting with?
     if len(sys.argv) > 1:
         node = sys.argv[1]
     else:
-        node = "https://lambda-coin.herokuapp.com/api"
-        # node = "https://lambda-coin-test-1.herokuapp.com/api"
-
+        # node = "https://lambda-coin.herokuapp.com/api"
+        node = 'https://lambda-coin-test-1.herokuapp.com/api'
     coins_mined = 0
 
     # Load or create ID
@@ -91,14 +86,23 @@ if __name__ == '__main__':
         try:
             data = r.json()
         except ValueError:
-            print('Non Json')
+            print("Error:  Non-json response")
+            print("Response returned:")
+            print(r)
+            break
         new_proof = proof_of_work(data.get('proof'))
 
         post_data = {"proof": new_proof,
                      "id": id}
 
         r = requests.post(url=node + "/mine", json=post_data)
-        data = r.json()
+        try:
+            data = r.json()
+        except ValueError:
+            print("Error:  Non-json response")
+            print("Response returned:")
+            print(r)
+            break
         if data.get('message') == 'New Block Forged':
             coins_mined += 1
             print("Total coins mined: " + str(coins_mined))
