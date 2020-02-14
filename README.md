@@ -1,4 +1,4 @@
-# Sprint Challenge: Hash Tables and Blockchain
+# Sprint Challenge: Hash Tables and Blockchain ~~~Nisa Champagne~~~
 
 This challenge allows you to practice the concepts and techniques learned over the past week and apply them in a concrete project. This Sprint, we learned how hash tables combine two data structures to get the best of both worlds and were introduced into the fascinating world of blockchains. In your challenge this week, you will demonstrate proficiency by solving algorithms in Python using hash tables and add another key feature to your blockchain.
 
@@ -24,11 +24,85 @@ This sprint challenge is divided up into three parts:  Hash tables coding, block
 
 Explain in detail the workings of a dynamic array:
 * What is the runtime complexity to access an array, add or remove from the front, and add or remove from the back?
+
+'''
+Getting item is O(1)
+Add or remove from front is O(n)
+ADd or remove from end - is O(1)
+
+'''
+
 * What is the worse case scenario if you try to extend the storage size of a dynamic array?
 
+'''
+O(n), in this case, n is size selected to extend, bigger, the more time it will take at worst case
+'''
+
 Explain how a blockchain is structured. What are the blocks, what is the chain? How is the data organized?
+
+
+'''
+
+Reverse SLL with the previous hash being the pointer
+	* list points forward and hash points backwards
+
+ STRUCTURE:
+ BLOCK: a container data structure, I.E a dictionary
+	INDEX
+	TIMESTAMP
+	LIST OF TRANSACTIONS
+	PREV_HASH (created by utilizing SHA256; hashes are only one way
+	PROOF
+
+ CHAIN: a python list of our dictionary objects
+
+ GENESIS BLOCK: parent block in a blockchain
+
+ HOW IS THE DATA ORGANIZED 
+	* the first block is the genesis block which is a starter block that we 		conditioned to have kind of whatever to  the previous hash since there is no block 	before it to get a previous hash from. 
+
+
+
+'''
  
 Explain how proof of work functions. How does it operate. How does this protect the chain from attack. What kind of attack is possible?
+
+''''
+
+
+ HOW DOES IT OPERATE:
+	
+	** guess and check
+
+	easy to modify because its publicly shared but the hash chain will be broken
+
+	** difficult to do but easy to check
+
+	**we stringify a block,
+	 using the SHA 356 hashing function to create a hash of the last block + a proposed solution
+	 ** valid_proof usually helps with a condition of some sort, i.e. first 6 characters being 0's
+
+
+	* Big O is crazy bad!
+	
+
+	* STRINGIFY THE BLOCK AND LOOK FOR A PROOF
+
+	* LOOP THROUGH THE POSSIBILITIES, CHECKING EACH POSSIBLE NUMBER AGAINST A   CONDITION (VALID_PROOF ) IN AN EFFORT TO FIND A NUMBER THAT IS A VALID PROOF
+
+	*dIFFICULT TO PRODUCE BUT EASY TO VERIFY
+	
+
+
+ HOW DOES THIS PROTECT THE CHAIN FROM ATTACK
+
+	* the proof is pretty difficult to solve even if you have a whole campus of  computers to help. 
+
+	* it takes the average computer 100 years to compute a solution to a proof of work.
+
+
+
+''''
 
 ## Project Set Up
 
