@@ -10,6 +10,19 @@ from timeit import default_timer as timer
 import random
 
 
+DIFFICULTY = 6
+
+PURPLE = "\033[95m"
+CYAN ="\033[96m"
+DARKCYAN = "\033[36m"
+BLUE = "\033[94m"
+GREEN = "\033[92m"
+YELLOW = "\033[93m"
+RED = "\033[91m"
+BOLD = "\033[1m"
+UNDERLINE = "\033[4m"
+END = "\033[0m"
+
 def proof_of_work(last_proof):
     """
     Multi-Ouroboros of Work Algorithm
@@ -22,11 +35,15 @@ def proof_of_work(last_proof):
 
     start = timer()
 
-    print("Searching for next proof")
+    print(GREEN + "Searching for next proof")
     proof = 0
     #  TODO: Your code here
+    last = f"{last_proof}".encode()
+    last_hash = hashlib.sha256(last).hexdigest()
+    while valid_proof(last_hash, proof) is False:
+        proof += random.random()
 
-    print("Proof found: " + str(proof) + " in " + str(timer() - start))
+    print(RED + "Proof found: " + str(proof) + " in " + str(timer() - start))
     return proof
 
 
@@ -40,8 +57,13 @@ def valid_proof(last_hash, proof):
     """
 
     # TODO: Your code here!
-    pass
+    guess = f"{proof}".encode()
+    guess_hash = hashlib.sha256(guess).hexdigest()
 
+    #prints
+    # print(YELLOW + f"{guess_hash[:6]} || {last_hash[-6:]}")
+
+    return guess_hash[:DIFFICULTY] == last_hash[:DIFFICULTY]
 
 if __name__ == '__main__':
     # What node are we interacting with?
@@ -49,6 +71,7 @@ if __name__ == '__main__':
         node = sys.argv[1]
     else:
         node = "https://lambda-coin.herokuapp.com/api"
+        # node = "https://lambda-coin-test-1.herokuapp.com/api"
 
     coins_mined = 0
 
@@ -65,7 +88,10 @@ if __name__ == '__main__':
     while True:
         # Get the last proof from the server
         r = requests.get(url=node + "/last_proof")
-        data = r.json()
+        try:
+            data = r.json()
+        except ValueError:
+            print('Non Json')
         new_proof = proof_of_work(data.get('proof'))
 
         post_data = {"proof": new_proof,
